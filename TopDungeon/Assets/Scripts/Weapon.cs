@@ -22,7 +22,7 @@ public class Weapon : Collidable
 
     private void Awake()
     {
-        playerControls = GameObject.Find("Player").GetComponent<PlayerControls>();
+        playerControls = new PlayerControls();
     }
 
     private void OnEnable()
@@ -50,7 +50,21 @@ public class Weapon : Collidable
 
     protected override void OnCollide(Collider2D coll)
     {
-        
+        if(coll.tag == "Fighter")
+        {
+            if(coll.name == "Player")
+                return;
+
+            //create a new damage object, then send it to the fighter we hit
+            Damage damage = new Damage
+            {
+                origin = transform.position,
+                damageAmount = damagePoint,
+                pushForce = pushForce
+            };
+            
+            coll.SendMessage("ReceiveDamage", damage);
+        }
     }
 
 
